@@ -6,7 +6,7 @@ import os
 import psutil
 
 # === CONFIG ===
-VIDEO_FILE = "/home/pi/Videos/test.mp4"  # Change to your real path
+VIDEO_FILE = "test.mp4"  # Change to your real path
 GPIO_BUTTON = 22
 DEBOUNCE_TIME = 300  # in ms
 STATE_VIDEO = 0
