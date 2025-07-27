@@ -1,6 +1,6 @@
-# 🎥 Raspberry Pi HDMI Video Switcher (GPIO Controlled)
+# 🎥 Raspberry Pi Video Switcher (GPIO Controlled)
 
-This project allows you to **toggle between HDMI video playback and a live webcam feed** using a physical button connected to **GPIO 22** on a **Raspberry Pi 5**.
+This project allows you to **toggle between mp4 video playback and a live webcam feed** using a physical button connected to **GPIO 22** on a **Raspberry Pi 5**.
 
 Useful for display kiosks, art installations, or smart video systems where control via physical interface is required.
 
@@ -33,3 +33,9 @@ Install with:
 ```bash
 pip install opencv-python psutil RPi.GPIO
 sudo apt install vlc
+```
+run with:
+```bash
+python switch.py
+```
+```bash
