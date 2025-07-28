@@ -1,24 +1,21 @@
-import RPi.GPIO as GPIO
+from gpiozero import Button
 import cv2
 import subprocess
 import time
-import os
 import psutil
 
 # === CONFIG ===
 VIDEO_FILE = "BigBuckBunny_320x180.mp4"  
 GPIO_BUTTON = 27
-DEBOUNCE_TIME = 300  # in ms
 STATE_VIDEO = 0
 STATE_CAMERA = 1
-
-# === SETUP GPIO ===
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(GPIO_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # === GLOBAL STATE ===
 current_state = STATE_VIDEO
 vlc_process = None
+
+# === SETUP BUTTON ===
+button = Button(GPIO_BUTTON, pull_up=False)
 
 # === UTILS ===
 def kill_vlc():
@@ -55,10 +52,11 @@ def show_webcam():
     cap.release()
     cv2.destroyAllWindows()
 
-def button_pressed(channel):
+# === BUTTON HANDLER ===
+def button_pressed():
     global current_state, vlc_process
 
-    print("[GPIO] Button pressed")
+    print("[GPIOZERO] Button pressed")
 
     if current_state == STATE_VIDEO:
         print("[STATE] Switching to camera")
@@ -68,8 +66,7 @@ def button_pressed(channel):
         print("[STATE] Switching to video")
         current_state = STATE_VIDEO
 
-# === Setup button event ===
-GPIO.add_event_detect(GPIO_BUTTON, GPIO.FALLING, callback=button_pressed, bouncetime=DEBOUNCE_TIME)
+button.when_pressed = button_pressed
 
 # === MAIN LOOP ===
 try:
@@ -84,5 +81,4 @@ try:
 except KeyboardInterrupt:
     print("Exiting...")
     kill_vlc()
-    GPIO.cleanup()
     cv2.destroyAllWindows()
