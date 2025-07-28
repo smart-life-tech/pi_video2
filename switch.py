@@ -15,7 +15,7 @@ current_state = STATE_VIDEO
 vlc_process = None
 
 # === SETUP BUTTON ===
-button = Button(GPIO_BUTTON, pull_up=False)
+button = Button(GPIO_BUTTON, pull_up=True)
 
 # === UTILS ===
 def kill_vlc():
