@@ -6,7 +6,7 @@ import psutil
 
 # === CONFIG ===
 VIDEO_FILE = "test.mp4"  
-GPIO_BUTTON = 27
+GPIO_BUTTON = 22
 STATE_VIDEO = 0
 STATE_CAMERA = 1
 
@@ -29,7 +29,10 @@ def kill_vlc():
 def play_video():
     print("[INFO] Playing video...")
     kill_vlc()
-    return subprocess.Popen(["cvlc", "--fullscreen", "--play-and-exit", VIDEO_FILE])
+    return subprocess.Popen([
+        "cvlc", "--fullscreen", "--no-osd", "--no-video-title-show",
+        "--loop", VIDEO_FILE
+    ])
 
 def show_webcam():
     print("[INFO] Showing webcam...")
@@ -73,7 +76,7 @@ try:
     while True:
         if current_state == STATE_VIDEO:
             vlc_process = play_video()
-            vlc_process.wait()  # Wait for video to finish or be killed
+            #vlc_process.wait()  # Wait for video to finish or be killed
         elif current_state == STATE_CAMERA:
             show_webcam()
         time.sleep(0.1)
