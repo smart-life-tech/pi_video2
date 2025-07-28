@@ -6,8 +6,8 @@ import os
 import psutil
 
 # === CONFIG ===
-VIDEO_FILE = "test.mp4"  
-GPIO_BUTTON = 22
+VIDEO_FILE = "BigBuckBunny_320x180.mp4"  
+GPIO_BUTTON = 27
 DEBOUNCE_TIME = 300  # in ms
 STATE_VIDEO = 0
 STATE_CAMERA = 1
