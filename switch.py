@@ -86,13 +86,14 @@ try:
             if current_state != STATE_VIDEO:
                 current_state = STATE_VIDEO
                 hide_black_screen()
+                kill_mpv()
                 play_video()
                 show_black_screen()
         else:  # GPIO22 not grounded → Show webcam
             if current_state != STATE_CAMERA:
                 current_state = STATE_CAMERA
                 #show_black_screen()
-                #kill_mpv()
+                kill_mpv()
                 hide_black_screen()
                 show_webcam()
                 #show_black_screen()
