@@ -87,13 +87,15 @@ try:
                 current_state = STATE_VIDEO
                 show_black_screen()
                 play_video()
-                hide_black_screen()
+                #hide_black_screen()
         else:  # GPIO22 not grounded → Show webcam
             if current_state != STATE_CAMERA:
                 current_state = STATE_CAMERA
-                show_black_screen()
-                show_webcam()
+                #show_black_screen()
+                kill_mpv()
                 hide_black_screen()
+                show_webcam()
+                #hide_black_screen()
 
         time.sleep(0.2)
 
