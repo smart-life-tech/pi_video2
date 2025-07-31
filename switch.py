@@ -5,7 +5,7 @@ import time
 import psutil
 
 # === CONFIG ===
-VIDEO_FILE = "home/deg/pi_video2/test.mp4"  
+VIDEO_FILE = "/home/deg/pi_video2/test.mp4"  
 GPIO_BUTTON = 22
 STATE_VIDEO = 0
 STATE_CAMERA = 1
