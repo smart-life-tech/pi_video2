@@ -30,9 +30,17 @@ def play_video():
     print("[INFO] Playing video...")
     kill_vlc()
     return subprocess.Popen([
-        "cvlc", "--fullscreen", "--no-osd", "--no-video-title-show",
-        "--loop", VIDEO_FILE
+    "cvlc",
+    "--fullscreen",
+    "--no-osd",
+    "--no-video-title-show",
+    "--loop",
+    "--intf", "dummy",              # Disable GUI
+    "--codec", "avcodec",           # Use software decoding
+    "--vout", "mmal",               # Use Broadcom MMAL video output (Pi-compatible)
+    VIDEO_FILE
     ])
+
 
 def show_webcam():
     print("[INFO] Showing webcam...")
