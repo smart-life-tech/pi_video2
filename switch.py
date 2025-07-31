@@ -11,7 +11,7 @@ STATE_VIDEO = 0
 STATE_CAMERA = 1
 
 # === GLOBAL STATE ===
-current_state = STATE_CAMERA
+current_state = STATE_VIDEO
 vlc_process = None
 
 # === SETUP BUTTON ===
