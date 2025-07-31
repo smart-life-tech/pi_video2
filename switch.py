@@ -1,4 +1,4 @@
-from gpiozero import Button
+from gpiozero import DigitalInputDevice
 import cv2
 import subprocess
 import time
@@ -6,15 +6,15 @@ import psutil
 
 # === CONFIG ===
 VIDEO_FILE = "/home/deg/pi_video2/test.mp4"
-GPIO_BUTTON = 22
+GPIO_INPUT = 22  # Connected to GND to switch
 STATE_VIDEO = 0
 STATE_CAMERA = 1
 
 # === GLOBAL STATE ===
-current_state = STATE_VIDEO
+current_state = None
 
-# === SETUP BUTTON ===
-button = Button(GPIO_BUTTON, pull_up=True)
+# === SETUP GPIO INPUT (pull-up enabled) ===
+input_pin = DigitalInputDevice(GPIO_INPUT, pull_up=True)
 
 # === UTILS ===
 def kill_mpv():
@@ -38,47 +38,35 @@ def play_video():
 def show_webcam():
     print("[INFO] Showing webcam...")
     cap = cv2.VideoCapture(0)
-
     if not cap.isOpened():
         print("[ERROR] Cannot open camera")
         return
 
-    while current_state == STATE_CAMERA:
+    while input_pin.value == 0:  # Still grounded
         ret, frame = cap.read()
         if not ret:
             break
         frame_resized = cv2.resize(frame, (1280, 720))
         cv2.imshow('Webcam Feed', frame_resized)
-
-        if cv2.waitKey(1) == 27:  # Esc to quit webcam view
+        if cv2.waitKey(1) == 27:  # Esc to quit manually
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
-# === BUTTON HANDLER ===
-def button_pressed():
-    global current_state
-    print("[GPIOZERO] Button pressed")
-    if current_state == STATE_VIDEO:
-        print("[STATE] Switching to CAMERA")
-        kill_mpv()
-        current_state = STATE_CAMERA
-    else:
-        print("[STATE] Switching to VIDEO")
-        current_state = STATE_VIDEO
-
-button.when_pressed = button_pressed
-
 # === MAIN LOOP ===
 try:
+    print("[BOOT] Starting...")
     while True:
-        if current_state == STATE_VIDEO:
-            play_video()
-            while current_state == STATE_VIDEO:
-                time.sleep(0.1)
-        elif current_state == STATE_CAMERA:
-            show_webcam()
+        if input_pin.value == 1:  # Not grounded
+            if current_state != STATE_VIDEO:
+                current_state = STATE_VIDEO
+                play_video()
+        else:  # Grounded
+            if current_state != STATE_CAMERA:
+                current_state = STATE_CAMERA
+                kill_mpv()
+                show_webcam()
         time.sleep(0.1)
 
 except KeyboardInterrupt:
