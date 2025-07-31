@@ -132,6 +132,10 @@ try:
                 black_screen.stop()
                 kill_mpv()
                 play_video()
+                while True:
+                    # If grounded again, stop showing webcam
+                    if input_pin.value == 1:
+                        break
                 black_screen.start()
 
         else:  # GPIO22 not grounded → Show webcam
