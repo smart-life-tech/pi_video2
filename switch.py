@@ -58,7 +58,7 @@ def show_webcam():
 try:
     print("[BOOT] Starting...")
     while True:
-        if input_pin.value == 1:  # Not grounded
+        if input_pin.value == 0:  # Not grounded
             if current_state != STATE_VIDEO:
                 current_state = STATE_VIDEO
                 play_video()
