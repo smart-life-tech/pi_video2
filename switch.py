@@ -5,20 +5,19 @@ import time
 import psutil
 
 # === CONFIG ===
-VIDEO_FILE = "/home/deg/pi_video2/test.mp4"  
+VIDEO_FILE = "/home/deg/pi_video2/test.mp4"
 GPIO_BUTTON = 22
 STATE_VIDEO = 0
 STATE_CAMERA = 1
 
 # === GLOBAL STATE ===
 current_state = STATE_VIDEO
-vlc_process = None
 
 # === SETUP BUTTON ===
 button = Button(GPIO_BUTTON, pull_up=True)
 
 # === UTILS ===
-def kill_vlc():
+def kill_mpv():
     for proc in psutil.process_iter(['pid', 'name']):
         if proc.info['name'] and "mpv" in proc.info['name'].lower():
             try:
@@ -28,14 +27,13 @@ def kill_vlc():
 
 def play_video():
     print("[INFO] Playing video...")
-    kill_vlc()
-    subprocess.Popen([
-    "mpv",
-    "--fs",
-    "--loop",
-    "/home/deg/pi_video2/test.mp4"
+    kill_mpv()
+    return subprocess.Popen([
+        "mpv",
+        "--fs",
+        "--loop",
+        VIDEO_FILE
     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
 
 def show_webcam():
     print("[INFO] Showing webcam...")
@@ -52,7 +50,7 @@ def show_webcam():
         frame_resized = cv2.resize(frame, (1280, 720))
         cv2.imshow('Webcam Feed', frame_resized)
 
-        if cv2.waitKey(1) == 27:  # Esc to quit
+        if cv2.waitKey(1) == 27:  # Esc to quit webcam view
             break
 
     cap.release()
@@ -60,16 +58,14 @@ def show_webcam():
 
 # === BUTTON HANDLER ===
 def button_pressed():
-    global current_state, vlc_process
-
+    global current_state
     print("[GPIOZERO] Button pressed")
-
     if current_state == STATE_VIDEO:
-        print("[STATE] Switching to camera")
-        kill_vlc()
+        print("[STATE] Switching to CAMERA")
+        kill_mpv()
         current_state = STATE_CAMERA
     else:
-        print("[STATE] Switching to video")
+        print("[STATE] Switching to VIDEO")
         current_state = STATE_VIDEO
 
 button.when_pressed = button_pressed
@@ -78,13 +74,15 @@ button.when_pressed = button_pressed
 try:
     while True:
         if current_state == STATE_VIDEO:
-            vlc_process = play_video()
-            #vlc_process.wait()  # Wait for video to finish or be killed
+            play_video()
+            while current_state == STATE_VIDEO:
+                time.sleep(0.1)
         elif current_state == STATE_CAMERA:
             show_webcam()
         time.sleep(0.1)
 
 except KeyboardInterrupt:
     print("Exiting...")
-    kill_vlc()
+    kill_mpv()
     cv2.destroyAllWindows()
+    
