@@ -3,7 +3,7 @@ import cv2
 import subprocess
 import time
 import psutil
-
+import os
 # === CONFIG ===
 VIDEO_FILE = "/home/deg/pi_video2/test.mp4"
 GPIO_INPUT = 22  # Connected to GND to play video
@@ -17,6 +17,10 @@ mpv_process = None
 # === SETUP GPIO INPUT (pull-up enabled) ===
 input_pin = DigitalInputDevice(GPIO_INPUT, pull_up=True)
 
+def show_black_screen():
+    os.system("sudo fbi -T 1 -d /dev/fb0 --noverbose -a /home/deg/pi_video2/black.png")
+def hide_black_screen():
+    os.system("sudo killall fbi")
 # === UTILS ===
 def kill_mpv():
     global mpv_process
@@ -77,11 +81,15 @@ try:
         if input_pin.value == 0:  # GPIO22 grounded → Play video
             if current_state != STATE_VIDEO:
                 current_state = STATE_VIDEO
+                show_black_screen()
                 play_video()
+                hide_black_screen()
         else:  # GPIO22 not grounded → Show webcam
             if current_state != STATE_CAMERA:
                 current_state = STATE_CAMERA
+                show_black_screen()
                 show_webcam()
+                hide_black_screen()
 
         time.sleep(0.2)
 
