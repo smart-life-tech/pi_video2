@@ -20,7 +20,7 @@ button = Button(GPIO_BUTTON, pull_up=True)
 # === UTILS ===
 def kill_vlc():
     for proc in psutil.process_iter(['pid', 'name']):
-        if proc.info['name'] and "vlc" in proc.info['name'].lower():
+        if proc.info['name'] and "mpv" in proc.info['name'].lower():
             try:
                 proc.terminate()
             except Exception:
@@ -29,17 +29,12 @@ def kill_vlc():
 def play_video():
     print("[INFO] Playing video...")
     kill_vlc()
-    return subprocess.Popen([
-    "cvlc",
-    "--fullscreen",
-    "--no-osd",
-    "--no-video-title-show",
+    subprocess.Popen([
+    "mpv",
+    "--fs",
     "--loop",
-    "--intf", "dummy",              # Disable GUI
-    "--codec", "avcodec",           # Use software decoding
-    "--vout", "mmal",               # Use Broadcom MMAL video output (Pi-compatible)
-    VIDEO_FILE
-    ])
+    "/home/deg/pi_video2/test.mp4"
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 def show_webcam():
