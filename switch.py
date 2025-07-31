@@ -8,10 +8,10 @@ import psutil
 VIDEO_FILE = "/home/deg/pi_video/test.mp4"  
 GPIO_BUTTON = 22
 STATE_VIDEO = 0
-STATE_CAMERA = 2
+STATE_CAMERA = 1
 
 # === GLOBAL STATE ===
-current_state = STATE_VIDEO
+current_state = STATE_CAMERA
 vlc_process = None
 
 # === SETUP BUTTON ===
