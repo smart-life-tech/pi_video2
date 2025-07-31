@@ -18,9 +18,13 @@ mpv_process = None
 input_pin = DigitalInputDevice(GPIO_INPUT, pull_up=True)
 
 def show_black_screen():
-    os.system("sudo fbi -T 1 -d /dev/fb0 --noverbose -a /home/deg/pi_video2/black.png")
+    subprocess.Popen([
+        "sudo", "fbi", "-T", "1", "-d", "/dev/fb0", "--noverbose", "-1", "-a", "/home/deg/pi_video2/black.png"
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    
 def hide_black_screen():
-    os.system("sudo killall fbi")
+    subprocess.call(["sudo", "killall", "fbi"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    
 # === UTILS ===
 def kill_mpv():
     global mpv_process
