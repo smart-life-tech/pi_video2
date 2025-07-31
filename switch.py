@@ -7,8 +7,8 @@ import psutil
 from gpiozero import DigitalInputDevice
 
 # === CONFIG ===
-VIDEO_FILE = "/home/pi/pi_video2/test.mp4"  # Change to your MP4 path
-IMAGE_PATH = "/home/pi/pi_video2/black.png"  # Black screen or logo
+VIDEO_FILE = "/home/deg/pi_video2/test.mp4"  # Change to your MP4 path
+IMAGE_PATH = "/home/deg/pi_video2/black.png"  # Black screen or logo
 GPIO_INPUT = 22  # Connect to GND to play video
 STATE_VIDEO = 0
 STATE_CAMERA = 1
