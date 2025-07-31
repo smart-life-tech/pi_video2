@@ -95,7 +95,7 @@ try:
                 #kill_mpv()
                 hide_black_screen()
                 show_webcam()
-                show_black_screen()
+                #show_black_screen()
 
         time.sleep(0.2)
 
