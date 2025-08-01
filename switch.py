@@ -86,11 +86,11 @@ try:
     webcam_thread = threading.Thread(target=webcam_loop)
     webcam_thread.start()
 
-    #time.sleep(2)
+    time.sleep(0.5)
     minimize_window("Webcam Feed")  # Initially minimize webcam
 
     while True:
-        if input_pin.value == 0:  # Grounded -> Show webcam
+        if input_pin.value == 1:  # Grounded -> Show webcam
             if current_state != STATE_CAMERA:
                 current_state = STATE_CAMERA
                 print("[SWITCH] Showing webcam")
