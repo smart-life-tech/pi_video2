@@ -30,9 +30,12 @@ image = pygame.transform.scale(image, (screen_width, screen_height))
 pygame.mouse.set_visible(False)
 
 def draw_black_screen():
+    os.system("setterm --cursor off") 
+    pygame.mouse.set_visible(False)
     screen.fill((0, 0, 0))
     screen.blit(image, (0, 0))
     pygame.display.flip()
+    os.system("wmctrl -r :ACTIVE: -b add,above")
 
 def kill_mpv():
     global mpv_process
