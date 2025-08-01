@@ -64,8 +64,8 @@ def play_video():
 
 def show_webcam():
     print("[INFO] Showing webcam...")
-    kill_mpv()
-    draw_black_screen()
+    #kill_mpv()
+    #draw_black_screen()
     time.sleep(0.3)  # Prevent flicker from leftover mpv window
 
     cap = cv2.VideoCapture(0)
