@@ -25,7 +25,7 @@ input_pin = DigitalInputDevice(GPIO_INPUT, pull_up=True)
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screen_width, screen_height = screen.get_size()
-image = pygame.image.load(BLACK_IMAGE)
+image = pygame.image.load(IMAGE_PATH)
 image = pygame.transform.scale(image, (screen_width, screen_height))
 pygame.mouse.set_visible(False)
 
