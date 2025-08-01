@@ -78,14 +78,14 @@ def restore_window(title):
 
 try:
     print("[BOOT] Starting video and webcam...")
-    start_video_loop()
+    webcam_loop()
 
-    # Start webcam thread in background
-    webcam_thread = threading.Thread(target=webcam_loop)
+    # Start video thread in background
+    webcam_thread = threading.Thread(target=start_video_loop)
     webcam_thread.start()
 
     time.sleep(2)
-    minimize_window("Webcam Feed")  # Initially minimize webcam
+    minimize_window("VideoPlayer")  # Initially minimize video player 
 
     while True:
         if input_pin.value == 1:  # Grounded -> Show webcam
