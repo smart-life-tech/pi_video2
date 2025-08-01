@@ -49,9 +49,9 @@ def kill_mpv():
 def play_video():
     global mpv_process
     print("[INFO] Playing video...")
-    kill_mpv()
+    #kill_mpv()
     draw_black_screen()
-    time.sleep(0.3)  # Small delay to ensure screen is cleared
+    #time.sleep(0.3)  # Small delay to ensure screen is cleared
     mpv_process = subprocess.Popen([
         "mpv",
         "--fs",
@@ -64,7 +64,7 @@ def play_video():
 
 def show_webcam():
     print("[INFO] Showing webcam...")
-    #kill_mpv()
+    kill_mpv()
     #draw_black_screen()
     time.sleep(0.3)  # Prevent flicker from leftover mpv window
 
