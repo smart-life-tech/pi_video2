@@ -23,23 +23,24 @@ mpv_black_proc = None
 input_pin = DigitalInputDevice(GPIO_INPUT, pull_up=True)
 
 # === FUNCTIONS ===
-def kill_process(name_substring):
+def kill_process_by_name(name):
     for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
-        if proc.info['cmdline'] and any(name_substring in s for s in proc.info['cmdline']):
-            try:
-                proc.terminate()
-            except Exception:
-                pass
+        try:
+            if proc.info['cmdline'] and any(name in s for s in proc.info['cmdline']):
+                proc.kill()
+        except Exception:
+            pass
 
 def start_black_screen():
     global mpv_black_proc
-    if mpv_black_proc is None:
+    if mpv_black_proc is None or mpv_black_proc.poll() is not None:
         print("[INFO] Starting persistent black screen...")
+        kill_process_by_name("black.png")  # Ensure no other black screen is active
         mpv_black_proc = subprocess.Popen([
             "mpv",
-            "--fs", "--no-border", "--ontop",
-            "--loop",
+            "--fs", "--no-border", "--ontop", "--really-quiet",
             "--geometry=0:0",
+            "--loop",
             "--image-display-duration=inf",
             BLACK_IMAGE
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -47,37 +48,40 @@ def start_black_screen():
 def play_video():
     global mpv_video_proc
     print("[INFO] Playing video...")
-    kill_process(VIDEO_FILE)  # Just in case
+    stop_video()
     mpv_video_proc = subprocess.Popen([
         "mpv",
-        "--fs", "--loop", "--no-border", "--ontop",
+        "--fs", "--no-border", "--ontop", "--really-quiet",
         "--geometry=0:0",
+        "--loop",
         VIDEO_FILE
     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def stop_video():
     global mpv_video_proc
-    if mpv_video_proc:
+    if mpv_video_proc and mpv_video_proc.poll() is None:
         mpv_video_proc.terminate()
+        mpv_video_proc.wait()
         mpv_video_proc = None
-    kill_process(VIDEO_FILE)
+    kill_process_by_name("mpv")
 
 def show_webcam():
     print("[INFO] Showing webcam...")
     stop_video()
-
     cap = cv2.VideoCapture(0)
+
     if not cap.isOpened():
         print("[ERROR] Cannot open camera")
         return
 
     cv2.namedWindow("Webcam Feed", cv2.WINDOW_NORMAL)
     cv2.setWindowProperty("Webcam Feed", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+    # Give time to create the window then raise it
+    time.sleep(0.5)
     subprocess.call(["wmctrl", "-r", "Webcam Feed", "-b", "add,above"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    while True:
-        if input_pin.value == 0:  # Back to grounded
-            break
+    while input_pin.value == 1:
         ret, frame = cap.read()
         if not ret:
             break
@@ -88,6 +92,7 @@ def show_webcam():
 
     cap.release()
     cv2.destroyAllWindows()
+    start_black_screen()  # Restore black background after webcam closes
 
 # === MAIN ===
 try:
@@ -107,7 +112,7 @@ try:
         time.sleep(0.2)
 
 except KeyboardInterrupt:
-    print("Exiting...")
+    print("[EXIT] Cleaning up...")
     stop_video()
     if mpv_black_proc:
         mpv_black_proc.terminate()
