@@ -88,6 +88,9 @@ try:
 
     time.sleep(0.5)
     minimize_window("Webcam Feed")  # Initially minimize webcam
+    current_state = STATE_VIDEO
+    restore_window("VideoPlayer")
+    
 
     while True:
         if input_pin.value == 1:  # Grounded -> Show webcam
