@@ -89,6 +89,8 @@ try:
     time.sleep(0.5)
     minimize_window("Webcam Feed")  # Initially minimize webcam
     current_state = STATE_VIDEO
+    start_video_loop()
+    time.sleep(0.5)
     raise_window("VideoPlayer")
     restore_window("VideoPlayer")
     
